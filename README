@@ -1,0 +1,12 @@
+HoverMaker javascript library.
+
+GIT REPOSITORY INCLUDES TWO VERSIONS.
+One depends on prototype.js; the other depends on jQuery. Feel free to use either.
+
+Simplifies the process of adding hover states to images in a web page.
+Just add a classname ("hover" by default) to the images that should have hover states.
+Name the images according to a convention (image.png and image-over.png for example), 
+or set up an object with custom over- and off-state filenames.
+Instantiate this object, and let it take over.
+
+@author Charles Schoenfeld, Adams & Knight
