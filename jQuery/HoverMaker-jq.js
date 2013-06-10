@@ -65,7 +65,7 @@ CAS.HoverMaker.prototype = {
 			srcimg = this.imagedir + this.hoverstates[el.id]['hover'];
 		} else {
 			// Break down the element's current path.
-			if (el.src.include('-over')) { return el.src; }
+			if (el.src.indexOf('-over') > -1) { return el.src; }
 			var srcpcs = el.src.split('/');
 			var srcfile = srcpcs.pop();
 			var filepcs = srcfile.split('.');
