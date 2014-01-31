@@ -11,9 +11,13 @@
 	Instantiate this object, call its "initialize" function, and let it take over.
 
 	@author Charles Schoenfeld, Adams & Knight
-	@version 1.0
+	@version 1.1
 	
 	Version History:
+	1.1:
+		Added "useWrappers" parameter. Hover class can be applied to a div AROUND an image, instead of the image itself.
+		Cleaned up documentation regarding how to initialize with custom parameters.
+	
 	1.0:
 		Initial Release		
 	
@@ -32,12 +36,13 @@
 			'hover': 'myphoto2-over.jpg'
 		}
 	};
-	hovers = new CAS.HoverMaker({
+	hovers = new CAS.HoverMaker();
+	hovers.initialize({
 		slideclass: '.hasHoverState', 
 		imagedir: 'http://www.mysite.com/pix/', 
-		hoverstates: my_hoverstates
+		hoverstates: my_hoverstates, 
+		useWrappers: true
 	});
-	hovers.initialize();
 		
 */
 
@@ -53,8 +58,10 @@ CAS.HoverMaker.prototype = {
 	initialize: function(params) {
 		if ((typeof params) == 'undefined') { params = {}; };
 		this.watchclass = (params.slideclass) ? params.slideclass : '.hover';
+		this.useWrappers = (params.useWrappers) ? params.useWrappers : false;
 		this.imagedir = (params.imagedir) ? params.imagedir : (window.BASE_URL ? (window.BASE_URL + 'images/') : (window.location.protocol + '//' + window.location.hostname + '/images/'));
 		this.elementsToWatch = jQuery(this.watchclass);
+		this.imagesToLoad = (this.useWrappers === true) ? jQuery(this.watchclass + ' img') : this.elementsToWatch;
 		this.hoverstates = (params.hoverstates) ? params.hoverstates : {};
 		jQuery.proxy(this.begin, this)();		
 	},
@@ -100,13 +107,13 @@ CAS.HoverMaker.prototype = {
 	}, 
 	
 	doHover: function(e) {
-		var el = e.delegateTarget;
+		var el = (this.useWrappers === true) ? jQuery(e.delegateTarget).find('img')[0] : e.delegateTarget;
 		var srcimg = jQuery.proxy(this.getHoverSrc, this)(el);
 		el.src = srcimg;		
 	}, 
 	
 	endHover: function(e) {
-		var el = e.delegateTarget;
+		var el = (this.useWrappers === true) ? jQuery(e.delegateTarget).find('img')[0] : e.delegateTarget;
 		if (this.hoverstates[el.id]) {
 			el.src = this.imagedir + this.hoverstates[el.id]['off'];
 		} else {
@@ -116,7 +123,7 @@ CAS.HoverMaker.prototype = {
 	
 	begin: function() {
 		// Preload the images for the over states.
-		jQuery(this.elementsToWatch).each(			
+		jQuery(this.imagesToLoad).each(
 			jQuery.proxy((function(i, el) {
 				jQuery.proxy(this.preload_overstate, this)(el);
 			}), this)
