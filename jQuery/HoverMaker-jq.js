@@ -47,7 +47,7 @@
 */
 
 // Namespace for my helper functions.
-window.CAS = {};
+if (!window.CAS) { window.CAS = {}; }
 
 // Create the HoverMaker class.
 CAS.HoverMaker = function() {};
